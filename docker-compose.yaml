@@ -1,0 +1,32 @@
+version: '3'
+services:
+    webapp:
+      container_name: "WebApp"
+      build: "./HappyNewYearCountDownWebApp"
+      restart: always
+      ports:
+        - "3214:80"
+    api:
+      container_name: "API"
+      build: "./HappyNewYearCountDownAPI"
+      depends_on:
+        db:
+          condition: service_healthy
+      ports:
+        - "3213:8080"
+      environment:
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_USER=thanaphoom
+      - DB_PASS=Zu33GTDIIqGv=ppTv38w
+      - DB_NAME=countdownwithme
+    db:
+      container_name: "Database"
+      image: "postgres"
+      restart: always
+      ports:
+        - "5432:5432"
+      environment:
+      - POSTGRES_USER=thanaphoom
+      - POSTGRES_PASSWORD=Zu33GTDIIqGv=ppTv38w
+      - POSTGRES_DB=countdownwithme

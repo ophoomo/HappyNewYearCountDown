@@ -5,16 +5,19 @@ import CountDownComponent from "./components/countdown-component";
 import HappyNewYearComponent from "./components/happy-new-year-component";
 import Swal from "sweetalert2";
 import Snowfall from "react-snowfall";
+import ChatComponent from "./components/chat-component";
 
 export default function App() {
   const ref = useRef<FireworksHandlers>(null);
   const [newYear, setNewYear] = useState(false);
+  const [openChat, setOpenChat] = useState(false);
   const [name, setName] = useState("ผู้ใช้งาน");
 
   const start = () => {
     if (!ref.current) return;
     ref.current.start();
     setNewYear(true);
+    setOpenChat(false);
     document.title = "Happy New Year 2024";
   };
 
@@ -88,6 +91,13 @@ export default function App() {
       <div className="flex h-screen w-full items-center justify-center flex-col z-50 fixed">
         <HappyNewYearComponent name={name} status={newYear} />
         <CountDownComponent status={!newYear} callback={() => start()} />
+        <button
+          className={`btn btn-sm fixed top-5 right-5 ${openChat ? 'btn-error' : 'btn-primary'}`}
+          onClick={() => setOpenChat((prev) => !prev)}
+        >
+          { openChat ? 'ปิด' : 'แชท'}
+        </button>
+        <ChatComponent username={name} status={openChat} />
       </div>
     </div>
   );

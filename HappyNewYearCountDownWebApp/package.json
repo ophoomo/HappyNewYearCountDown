@@ -1,5 +1,5 @@
 {
-  "name": "HappyNewYearCountDownWebApp",
+  "name": "happy-new-year-countdown-webapp",
   "private": true,
   "version": "0.0.1",
   "type": "module",
@@ -11,6 +11,8 @@
   },
   "dependencies": {
     "@fireworks-js/react": "^2.10.7",
+    "@microsoft/signalr": "^8.0.0",
+    "@types/node": "^20.10.5",
     "framer-motion": "^10.16.16",
     "moment": "^2.29.4",
     "moment-timezone": "^0.5.43",
