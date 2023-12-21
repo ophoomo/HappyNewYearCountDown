@@ -1,0 +1,14 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+    font-family: 'Kanit', sans-serif !important;
+}
+
+html, body {
+    background-position: top;
+    background-repeat: no-repeat;
+    background-image: url('/public/assets/images/bg.svg'), linear-gradient(rgba(0,0,0,0.5),rgba(0,0,0,0.9));
+    background-blend-mode: overlay;
+}
