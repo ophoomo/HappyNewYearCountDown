@@ -21,21 +21,25 @@ builder.Host.UseSerilog((context, configuration) =>
 
 var app = builder.Build();
 
-if (app.Environment.IsDevelopment()) {
+if (app.Environment.IsDevelopment())
+{
     app.UseSwagger();
     app.UseSwaggerUI();
-    app.UseCors(x => x
-        .AllowAnyMethod()
-        .AllowAnyHeader()
-        .SetIsOriginAllowed(origin => true)
-        .AllowCredentials());
 }
 
-using (var scope = app.Services.CreateScope()) {
+app.UseCors(x => x
+    .AllowAnyMethod()
+    .AllowAnyHeader()
+    .SetIsOriginAllowed(origin => true)
+    .AllowCredentials());
+
+using (var scope = app.Services.CreateScope())
+{
     var services = scope.ServiceProvider;
 
     var context = services.GetRequiredService<DatabaseContext>();
-    if (context.Database.GetPendingMigrations().Any()) {
+    if (context.Database.GetPendingMigrations().Any())
+    {
         context.Database.Migrate();
     }
 }
@@ -44,7 +48,8 @@ app.UseHttpsRedirection();
 
 app.MapHub<ChatHub>("chat-hub");
 
-app.MapHealthChecks("/health/5cYQ3Il14uZAhRo2RS9u3FlLkDqAT2", new HealthCheckOptions {
+app.MapHealthChecks("/health/5cYQ3Il14uZAhRo2RS9u3FlLkDqAT2", new HealthCheckOptions
+{
     ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
 });
 

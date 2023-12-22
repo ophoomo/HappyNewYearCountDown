@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import * as moment from "moment-timezone";
+import moment from "moment-timezone";
 import { useEffect, useState } from "react";
 
 interface ICountDownComponent {
@@ -65,25 +65,45 @@ export default function CountDownComponent({
         <div className="grid grid-flow-col gap-5 text-center auto-cols-max">
           <div className="flex flex-col text-yellow-600">
             <span className="countdown font-mono text-5xl md:text-7xl lg:text-8xl text-yellow-500">
-              <span style={{ "--value": date.day }}></span>
+              <span
+                style={
+                  // @ts-ignore
+                  { "--value": date.day }
+                }
+              ></span>
             </span>
             days
           </div>
           <div className="flex flex-col text-yellow-600">
             <span className="countdown font-mono text-5xl md:text-7xl lg:text-8xl text-yellow-500">
-              <span style={{ "--value": date.hour }}></span>
+              <span
+                style={
+                  // @ts-ignore
+                  { "--value": date.hour }
+                }
+              ></span>
             </span>
             hours
           </div>
           <div className="flex flex-col text-yellow-600">
             <span className="countdown font-mono text-5xl md:text-7xl lg:text-8xl text-yellow-500">
-              <span style={{ "--value": date.min }}></span>
+              <span
+                style={
+                  // @ts-ignore
+                  { "--value": date.min }
+                }
+              ></span>
             </span>
             min
           </div>
           <div className="flex flex-col text-yellow-600">
             <span className="countdown font-mono text-5xl md:text-7xl lg:text-8xl text-yellow-500">
-              <span style={{ "--value": date.sec }}></span>
+              <span
+                style={
+                  // @ts-ignore
+                  { "--value": date.sec }
+                }
+              ></span>
             </span>
             sec
           </div>

@@ -1,5 +1,5 @@
 import * as signalR from "@microsoft/signalr";
-const URL = "http://localhost:5210/chat-hub"; //or whatever your backend port is
+const URL = import.meta.env.VITE_HOST_API || "http://localhost:5210/";
 class Connector {
   private connection: signalR.HubConnection;
   public events: (
@@ -10,7 +10,7 @@ class Connector {
   static instance: Connector;
   constructor() {
     this.connection = new signalR.HubConnectionBuilder()
-      .withUrl(URL)
+      .withUrl(URL + "chat-hub")
       .withAutomaticReconnect()
       .build();
     this.connection.start().catch((err) => document.write(err));

@@ -6,6 +6,7 @@ import HappyNewYearComponent from "./components/happy-new-year-component";
 import Swal from "sweetalert2";
 import Snowfall from "react-snowfall";
 import ChatComponent from "./components/chat-component";
+import moment from "moment-timezone";
 
 export default function App() {
   const ref = useRef<FireworksHandlers>(null);
@@ -55,9 +56,21 @@ export default function App() {
     }
   };
 
+  const setBGTime = () => {
+    let op = 0.1;
+    const bg = (document.getElementById('overlay')) as HTMLElement;
+    bg.style.transition = '4s ease-in-out'
+    const time = moment.tz("Asia/Bangkok");
+    if (time.hour() >= 22 || time.hour() <= 4) op = 0.8;
+    else if (time.hour() >= 18 || time.hour() >= 6) op = 0.7;
+    else if (time.hour() >= 14) op = 0.3
+    bg.style.opacity = op.toString();
+  }
+
   useEffect(() => {
     getName();
     stop();
+    setBGTime();
   }, []);
 
   return (

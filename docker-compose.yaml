@@ -2,16 +2,21 @@ version: '3'
 services:
     webapp:
       container_name: "WebApp"
-      build: "./HappyNewYearCountDownWebApp"
+      build: 
+        context: "./HappyNewYearCountDownWebApp"
+        args:
+          - VITE_HOST_API=http://localhost:3213/
       restart: always
+      depends_on:
+        - api
       ports:
         - "3214:80"
     api:
       container_name: "API"
       build: "./HappyNewYearCountDownAPI"
+      restart: always
       depends_on:
-        db:
-          condition: service_healthy
+        - db
       ports:
         - "3213:8080"
       environment:
@@ -24,9 +29,13 @@ services:
       container_name: "Database"
       image: "postgres"
       restart: always
+      volumes:
+        - db-vm:/var/lib/postgresql
       ports:
         - "5432:5432"
       environment:
       - POSTGRES_USER=thanaphoom
       - POSTGRES_PASSWORD=Zu33GTDIIqGv=ppTv38w
       - POSTGRES_DB=countdownwithme
+volumes:
+  db-vm:

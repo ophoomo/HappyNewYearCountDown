@@ -3,6 +3,9 @@ FROM node:18-alpine3.17 as build
 WORKDIR /app
 COPY . /app
 
+ARG VITE_HOST_API
+ENV VITE_HOST_API=$VITE_HOST_API
+
 RUN npm install
 RUN npm run build
 
