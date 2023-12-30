@@ -4,6 +4,8 @@ using HappyNewYearCountDownAPI.Dto;
 using HappyNewYearCountDownAPI.Models;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
+using System.Text;
+using System.Text.Encodings.Web;
 using System.Text.Json;
 
 namespace HappyNewYearCountDownAPI {
@@ -30,7 +32,8 @@ namespace HappyNewYearCountDownAPI {
         public override async Task OnConnectedAsync() {
             UserHandler.ConnectedIds.Add(Context.ConnectionId);
             await Clients.All.SendAsync("Online", UserHandler.ConnectedIds.Count);
-            var chats = await _databaseContext.Chat.OrderByDescending(x => x.Id).Take(6).ToListAsync();
+            var chats = await _databaseContext.Chat.OrderByDescending(x => x.CreatedAt).Take(6).ToListAsync();
+            chats = chats.OrderBy(x => x.CreatedAt).ToList();
             var chatsResult = _mapper.Map<List<ChatDto>>(chats);
             var json = JsonSerializer.Serialize(chatsResult);
             await Clients.Client(Context.ConnectionId).SendAsync("ReceiveMessage", json);
