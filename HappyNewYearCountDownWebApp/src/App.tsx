@@ -12,7 +12,7 @@ export default function App() {
   const ref = useRef<FireworksHandlers>(null);
   const [newYear, setNewYear] = useState(false);
   const [openChat, setOpenChat] = useState(false);
-  const [name, setName] = useState("ผู้ใช้งาน");
+  const [name, setName] = useState("ไม่ระบุตัวตน");
 
   const start = () => {
     if (!ref.current) return;
@@ -29,8 +29,9 @@ export default function App() {
 
   const getName = () => {
     const user_name = localStorage.getItem("name");
-    if (user_name != null) setName(user_name);
-    else {
+    if (user_name != null) {
+      setName(user_name);
+    } else {
       Swal.fire({
         icon: "question",
         title: "คำถาม?",
@@ -48,9 +49,8 @@ export default function App() {
           if (result.value != "") {
             localStorage.setItem("name", result.value);
             setName(result.value);
-          } else {
-            location.reload();
           }
+          location.reload();
         }
       });
     }
@@ -58,14 +58,14 @@ export default function App() {
 
   const setBGTime = () => {
     let op = 0.1;
-    const bg = (document.getElementById('overlay')) as HTMLElement;
-    bg.style.transition = '4s ease-in-out'
+    const bg = document.getElementById("overlay") as HTMLElement;
+    bg.style.transition = "4s ease-in-out";
     const time = moment.tz("Asia/Bangkok");
     if (time.hour() >= 22 || time.hour() <= 4) op = 0.8;
     else if (time.hour() >= 18 || time.hour() >= 6) op = 0.7;
-    else if (time.hour() >= 14) op = 0.3
+    else if (time.hour() >= 14) op = 0.3;
     bg.style.opacity = op.toString();
-  }
+  };
 
   useEffect(() => {
     getName();
@@ -105,10 +105,12 @@ export default function App() {
         <HappyNewYearComponent name={name} status={newYear} />
         <CountDownComponent status={!newYear} callback={() => start()} />
         <button
-          className={`btn btn-sm fixed top-5 right-5 ${openChat ? 'btn-error' : 'btn-primary'}`}
+          className={`btn btn-sm fixed top-5 right-5 ${
+            openChat ? "btn-error" : "btn-primary"
+          }`}
           onClick={() => setOpenChat((prev) => !prev)}
         >
-          { openChat ? 'ปิด' : 'แชท'}
+          {openChat ? "ปิด" : "แชท"}
         </button>
         <ChatComponent username={name} status={openChat} />
       </div>

@@ -4,14 +4,17 @@ using HappyNewYearCountDownAPI.Dto;
 using HappyNewYearCountDownAPI.Models;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
-using System.Text;
-using System.Text.Encodings.Web;
 using System.Text.Json;
 
 namespace HappyNewYearCountDownAPI {
 
+    public class Player {
+        public string Id { get; set; }
+        public string Name { get; set; } = "ไม่ระบุตัวตน";
+    }
+
     public static class UserHandler {
-        public static HashSet<string> ConnectedIds = new HashSet<string>();
+        public static HashSet<Player> player = new HashSet<Player>();
     }
 
     public class ChatHub : Hub {
@@ -30,8 +33,9 @@ namespace HappyNewYearCountDownAPI {
         }
 
         public override async Task OnConnectedAsync() {
-            UserHandler.ConnectedIds.Add(Context.ConnectionId);
-            await Clients.All.SendAsync("Online", UserHandler.ConnectedIds.Count);
+            Player player = new Player();
+            player.Id = Context.ConnectionId;
+            UserHandler.player.Add(player);
             var chats = await _databaseContext.Chat.OrderByDescending(x => x.CreatedAt).Take(6).ToListAsync();
             chats = chats.OrderBy(x => x.CreatedAt).ToList();
             var chatsResult = _mapper.Map<List<ChatDto>>(chats);
@@ -43,14 +47,25 @@ namespace HappyNewYearCountDownAPI {
             Chat chat = new Chat();
             chat.UserName = username;
             chat.Message = message;
+            chat.IsActive = true;
             _databaseContext.Chat.Add(chat);
             await _databaseContext.SaveChangesAsync();
             await Clients.All.SendAsync("Message", username, message);
         }
 
+        public async Task SetName(string username) {
+            var player = UserHandler.player.Where(x => x.Id == Context.ConnectionId).FirstOrDefault();
+            if (player != null) {
+                player.Name = username;
+            }
+            var jsonPlayer = JsonSerializer.Serialize(UserHandler.player.ToList());
+            await Clients.All.SendAsync("Online", jsonPlayer);
+        }
+
         public override async Task OnDisconnectedAsync(Exception? exception) {
-            UserHandler.ConnectedIds.Remove(Context.ConnectionId);
-            await Clients.All.SendAsync("Online", UserHandler.ConnectedIds.Count);
+            UserHandler.player.RemoveWhere(x => x.Id == Context.ConnectionId);
+            var jsonPlayer = JsonSerializer.Serialize(UserHandler.player.ToList());
+            await Clients.All.SendAsync("Online", jsonPlayer);
         }
 
     }

@@ -4,9 +4,9 @@ namespace HappyNewYearCountDownAPI.Dto {
     public class ChatDto {
 
         [JsonPropertyName("username")]
-        public String? UserName {  get; set; }
+        public String? UserName { get; set; }
 
         [JsonPropertyName("message")]
-        public String? Message {  get; set; }
+        public String? Message { get; set; }
     }
 }
