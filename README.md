@@ -23,4 +23,6 @@ This is an app created so that everyone won't have to count down the New Year al
     
 ## Screenshots
 
+[watch video] (https://www.youtube.com/watch?v=XH2T8G5Gees&ab_channel=Thanaphoomdev)
+
 ![preview image 1](https://github.com/ophoomo/HappyNewYearCountDown/blob/master/HappyNewYearCountDownWebApp/preview/preview1.png?raw=true)
