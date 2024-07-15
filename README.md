@@ -28,4 +28,4 @@ This is an app created so that everyone won't have to count down the New Year al
 
 ## Video
 
-![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/XH2T8G5Gees/0.jpg)](https://www.youtube.com/watch?v=XH2T8G5Gees)
+[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/XH2T8G5Gees/0.jpg)](https://www.youtube.com/watch?v=XH2T8G5Gees)
