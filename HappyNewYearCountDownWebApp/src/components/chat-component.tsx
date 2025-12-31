@@ -2,74 +2,70 @@ import { motion } from "framer-motion";
 import { ChangeEvent, KeyboardEvent, useEffect, useRef, useState } from "react";
 import Connector from "../signalr-connection";
 
-interface IChatComponent {
+interface ChatComponentProps {
   username: string;
   status: boolean;
 }
 
-export default function ChatComponent({ username, status }: IChatComponent) {
-  interface IChat {
-    username: string;
-    message: string;
-  }
-  interface IPlayer {
-    Id: string;
-    Name: string;
-  }
+interface ChatMessage {
+  UserName: string;
+  Message: string;
+}
 
-  const count = useRef(0);
-  const [chat, setChat] = useState<IChat[]>([]);
-  const [player, setPlayer] = useState<IPlayer[]>([]);
-  const mymessage = useRef<string>("");
+interface Player {
+  Id: string;
+  Name: string;
+}
+
+const MAX_CHAT = 6;
+
+export default function ChatComponent({
+  username,
+  status,
+}: ChatComponentProps) {
+  const [chats, setChats] = useState<ChatMessage[]>([]);
+  const [players, setPlayers] = useState<Player[]>([]);
+  const [message, setMessage] = useState("");
+
+  const inputRef = useRef<HTMLInputElement>(null);
   const { SendMessage, GetID, events } = Connector();
 
-  const onEnter = (e: KeyboardEvent<HTMLInputElement>) => {
-    if (e.key == "Enter") {
-      sendMessage();
-    }
-  };
-
-  const onInputMessage = (e: ChangeEvent<HTMLInputElement>) => {
-    mymessage.current = e.target.value;
-  };
+  /* ------------------ Handlers ------------------ */
 
   const sendMessage = () => {
-    if (mymessage.current.length > 0) {
-      SendMessage(username, mymessage.current);
-      (document.getElementById("myinput") as HTMLInputElement).value = "";
-      mymessage.current = "";
-    }
+    if (!message.trim()) return;
+
+    SendMessage(username, message);
+    setMessage("");
+    inputRef.current?.focus();
   };
 
-  const addChat = (data: IChat) => {
-    if (count.current >= 6) {
-      setChat((prevArray) => [...prevArray.slice(1), data]);
-    } else {
-      setChat((prevArray) => [...prevArray, data]);
-      count.current++;
-    }
+  const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") sendMessage();
   };
 
-  const handleOnlineReceived = (user: string) => {
-    const datas: IPlayer[] = JSON.parse(user);
-    setPlayer(datas);
+  const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setMessage(e.target.value);
   };
-  const handleGetMessageReceived = (message: string) => {
-    const datas: IChat[] = JSON.parse(message);
-    setChat(datas);
-    count.current = datas.length;
+
+  const addChat = (chat: ChatMessage) => {
+    setChats((prev) =>
+      prev.length >= MAX_CHAT ? [...prev.slice(1), chat] : [...prev, chat]
+    );
   };
+
+  /* ------------------ SignalR Events ------------------ */
+
+  const handleOnlineReceived = (data: string) => {
+    setPlayers(JSON.parse(data));
+  };
+
+  const handleGetMessageReceived = (data: string) => {
+    setChats(JSON.parse(data));
+  };
+
   const handleMessageReceived = (username: string, message: string) => {
-    addChat({
-      username: username,
-      message: message,
-    });
-  };
-
-  const CheckYourID = (item: IPlayer) => {
-    const id = GetID();
-    if (id == item.Id) return "bg-green-900 text-white";
-    return "";
+    addChat({ UserName: username, Message: message });
   };
 
   useEffect(() => {
@@ -80,31 +76,41 @@ export default function ChatComponent({ username, status }: IChatComponent) {
     );
   }, []);
 
+  /* ------------------ Utils ------------------ */
+
+  const isMyID = (player: Player) =>
+    GetID() === player.Id ? "bg-green-900 text-white" : "";
+
+  /* ------------------ Render ------------------ */
+
   return (
     <>
-      <dialog id="my_modal_3" className="modal">
+      {/* Modal */}
+      <dialog id="online_modal" className="modal">
         <div className="modal-box">
           <form method="dialog">
-            <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
+            <button className="btn btn-sm btn-circle absolute right-2 top-2">
               ✕
             </button>
           </form>
+
           <h3 className="font-bold text-lg">
-            รายชื่อผู้ใช้งานทั้งหมด ({player.length})
+            รายชื่อผู้ใช้งานทั้งหมด ({players.length})
           </h3>
+
           <div className="overflow-x-auto mt-2">
             <table className="table">
               <thead>
                 <tr>
-                  <th>รหัสประจำตัว</th>
-                  <th>ชื่อผู้ใช้งาน</th>
+                  <th>ID</th>
+                  <th>ชื่อผู้ใช้</th>
                 </tr>
               </thead>
               <tbody>
-                {player.map((item, i) => (
-                  <tr className={`hover ${CheckYourID(item)}`} key={i}>
-                    <td>{item.Id}</td>
-                    <td>{item.Name}</td>
+                {players.map((p) => (
+                  <tr key={p.Id} className={`hover ${isMyID(p)}`}>
+                    <td>{p.Id}</td>
+                    <td>{p.Name}</td>
                   </tr>
                 ))}
               </tbody>
@@ -112,33 +118,40 @@ export default function ChatComponent({ username, status }: IChatComponent) {
           </div>
         </div>
       </dialog>
+
+      {/* Chat Box */}
       <motion.div
         className="fixed bottom-10"
         initial={{ opacity: 0, left: -300 }}
-        transition={{ duration: 0.5 }}
         animate={{ opacity: status ? 1 : 0, left: status ? 20 : -300 }}
+        transition={{ duration: 0.5 }}
       >
-        {chat.map((item, i) => (
+        {chats.map((chat, i) => (
           <div key={i} className="chat chat-start">
-            <div className="chat-header">{item.username}</div>
-            <div className="chat-bubble">{item.message}</div>
+            <div className="chat-header">{chat.UserName}</div>
+            <div className="chat-bubble">{chat.Message}</div>
           </div>
         ))}
+
         <div className="mt-5">
           <p
             onClick={() =>
-              (document.getElementById("my_modal_3") as any).showModal()
+              (
+                document.getElementById("online_modal") as HTMLDialogElement
+              )?.showModal()
             }
             className="text-green-400 text-sm cursor-pointer"
           >
-            ขณะนี้กำลังมีคนออนไลน์อยู่ {player.length} คน
+            ขณะนี้กำลังมีคนออนไลน์อยู่ {players.length} คน
           </p>
+
           <div className="flex gap-2 mt-1">
             <input
-              onKeyDown={onEnter}
-              onChange={onInputMessage}
+              ref={inputRef}
+              value={message}
+              onChange={handleInputChange}
+              onKeyDown={handleKeyDown}
               placeholder="คุณอยากเขียนอะไร?"
-              id="myinput"
               className="input input-bordered"
             />
             <button onClick={sendMessage} className="btn btn-primary">

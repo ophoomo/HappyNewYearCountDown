@@ -25,9 +25,11 @@ export default function CountDownComponent({
     sec: 0,
   });
 
+  let interval: NodeJS.Timeout;
+
   const countdown = () => {
     const now = moment().tz("Asia/Bangkok");
-    const end = moment([2024, 0, 1]).tz("Asia/Bangkok");
+    const end = moment([2026, 0, 1]).tz("Asia/Bangkok");
     const diffTime = end.diff(now);
     const duration = moment.duration(diffTime, "milliseconds");
     const new_date = {
@@ -38,6 +40,7 @@ export default function CountDownComponent({
     };
     setDate(new_date);
     if (check_date(new_date)) {
+      clearInterval(interval);
       callback();
     }
   };
@@ -50,7 +53,7 @@ export default function CountDownComponent({
 
   useEffect(() => {
     countdown();
-    setInterval(() => {
+    interval = setInterval(() => {
       countdown();
     }, 1000);
   }, []);
