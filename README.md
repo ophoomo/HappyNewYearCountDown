@@ -11,7 +11,7 @@ This is an app created so that everyone won't have to count down the New Year al
 
 [![FrontEnd](https://skillicons.dev/icons?i=react,ts,tailwind)](https://skillicons.dev)
 
-**Backend** (C#, DotNet, SignalR, EF Core)
+**Backend** (C#, .NET, SignalR)
 
 [![Backend](https://skillicons.dev/icons?i=cs,dotnet)](https://skillicons.dev)
 
