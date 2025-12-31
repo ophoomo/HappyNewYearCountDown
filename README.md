@@ -15,12 +15,6 @@ This is an app created so that everyone won't have to count down the New Year al
 
 [![Backend](https://skillicons.dev/icons?i=cs,dotnet)](https://skillicons.dev)
 
-
-**Database** (PostgreSQL)
-
-[![Database](https://skillicons.dev/icons?i=postgres)](https://skillicons.dev)
-
-    
 ## Screenshots
 
 ![preview image 1](https://github.com/ophoomo/HappyNewYearCountDown/blob/master/HappyNewYearCountDownWebApp/preview/preview1.png?raw=true)
