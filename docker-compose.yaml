@@ -17,5 +17,3 @@ services:
       restart: always
       ports:
         - "3213:8080"
-volumes:
-  db-vm:
